@@ -1,0 +1,821 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sistema de Matrícula | CECELO</title>
+
+<style>
+:root {
+    --vino: #781f3b;
+    --vino-oscuro: #58152b;
+    --verde: #35734a;
+    --azul: #244f78;
+    --gris: #65717e;
+    --fondo: #f2f4f7;
+    --blanco: #ffffff;
+    --borde: #dce1e7;
+    --error: #c62828;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--fondo);
+    color: #263445;
+}
+
+.barra-colores {
+    height: 7px;
+    background: linear-gradient(
+        to right,
+        var(--vino) 25%,
+        var(--verde) 25% 50%,
+        var(--azul) 50% 75%,
+        var(--gris) 75%
+    );
+}
+
+
+header {
+    background: linear-gradient(
+        125deg,
+        var(--vino-oscuro),
+        var(--vino),
+        var(--azul)
+    );
+    color: white;
+    padding: 30px 20px;
+}
+
+.encabezado {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.logo {
+    width: 105px;
+    height: 105px;
+    padding: 8px;
+    object-fit: contain;
+    background: white;
+    border-radius: 16px;
+}
+
+.encabezado h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    letter-spacing: 1px;
+}
+
+.encabezado p {
+    margin: 5px 0;
+    color: #f3eaf0;
+    line-height: 1.5;
+}
+
+.etiqueta {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 7px 12px;
+    border: 1px solid #ffffff70;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+
+main {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 0 18px;
+}
+
+.introduccion {
+    margin-bottom: 25px;
+}
+
+.introduccion h2 {
+    color: var(--vino);
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.introduccion p {
+    color: var(--gris);
+    line-height: 1.7;
+}
+
+.tarjeta {
+    background: white;
+    border: 1px solid var(--borde);
+    border-radius: 15px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 20px #27384a0b;
+}
+
+.titulo-seccion {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #edf0f3;
+}
+
+.numero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #f5e9ed;
+    color: var(--vino);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.tarjeta:nth-of-type(2) .numero {
+    background: #e9f4ec;
+    color: var(--verde);
+}
+
+.tarjeta:nth-of-type(3) .numero {
+    background: #eaf0f8;
+    color: var(--azul);
+}
+
+.titulo-seccion h3 {
+    margin: 0 0 5px;
+    color: var(--vino);
+    font-size: 19px;
+}
+
+.titulo-seccion p {
+    margin: 0;
+    color: var(--gris);
+    font-size: 13px;
+}
+
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 21px;
+}
+
+.campo {
+    min-width: 0;
+}
+
+.completo {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+.requerido {
+    color: var(--vino);
+}
+
+input, select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid #cfd7e0;
+    border-radius: 8px;
+    background: #fbfcfe;
+    font: inherit;
+    font-size: 14px;
+    color: #263445;
+    transition: .2s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--azul);
+    box-shadow: 0 0 0 3px #244f7818;
+    background: white;
+}
+
+input::placeholder {
+    color: #9ba5b1;
+}
+
+input.invalido, select.invalido {
+    border-color: var(--error);
+    background: #fffafa;
+}
+
+.error-campo {
+    display: none;
+    color: var(--error);
+    font-size: 12px;
+    margin-top: 7px;
+    line-height: 1.4;
+}
+
+.error-campo.visible {
+    display: block;
+}
+
+.ayuda {
+    color: var(--gris);
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+/* BOTONES */
+
+.acciones {
+    display: flex;
+    gap: 13px;
+    margin-top: 26px;
+}
+
+button {
+    min-height: 49px;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.guardar {
+    flex: 1;
+    background: var(--vino);
+    color: white;
+}
+
+.guardar:hover {
+    background: var(--vino-oscuro);
+    transform: translateY(-1px);
+}
+
+.limpiar {
+    background: #e7ebef;
+    color: #465361;
+}
+
+.limpiar:hover {
+    background: #d7dde4;
+}
+
+
+#mensaje {
+    display: none;
+    padding: 16px;
+    margin-top: 20px;
+    border-radius: 9px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+#mensaje.exito {
+    display: block;
+    background: #eaf5ed;
+    color: #25633a;
+    border: 1px solid #bfdfc7;
+}
+
+#mensaje.error-general {
+    display: block;
+    background: #fff0f0;
+    color: #a51f1f;
+    border: 1px solid #f0c6c6;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 15px;
+    color: var(--gris);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+footer strong {
+    color: var(--vino);
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 25px 16px;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .logo {
+        width: 88px;
+        height: 88px;
+    }
+
+    .encabezado h1 {
+        font-size: 25px;
+    }
+
+    main {
+        margin-top: 24px;
+        padding: 0 12px;
+    }
+
+    .introduccion h2 {
+        font-size: 23px;
+    }
+
+    .tarjeta {
+        padding: 20px 16px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .completo {
+        grid-column: auto;
+    }
+
+    .acciones {
+        flex-direction: column;
+    }
+
+    .acciones button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="barra-colores"></div>
+
+<header>
+    <div class="encabezado">
+
+        <img
+            src="CECELO.jpeg"
+            alt="Logo del CECELO"
+            class="logo"
+        >
+
+        <div>
+            <h1>CECELO</h1>
+            <p>Centro Educativo Católico Eulogio López Obando</p>
+            <p>Cañas, Guanacaste, Costa Rica</p>
+            <span class="etiqueta">SISTEMA DE MATRÍCULA ESTUDIANTIL</span>
+        </div>
+
+    </div>
+</header>
+
+<main>
+
+    <div class="introduccion">
+        <h2>Registro de matrícula</h2>
+        <p>
+            Complete los datos del estudiante y de su encargado.
+            Todos los campos marcados con
+            <span class="requerido">*</span> son obligatorios.
+        </p>
+    </div>
+
+    <form id="formulario" novalidate>
+
+        <!-- DATOS DEL ESTUDIANTE -->
+
+        <section class="tarjeta">
+
+            <div class="titulo-seccion">
+                <div class="numero">01</div>
+                <div>
+                    <h3>Datos del estudiante</h3>
+                    <p>Información personal y académica</p>
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <div class="campo completo">
+                    <label for="nombreEstudiante">
+                        Nombre completo <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="nombreEstudiante"
+                        name="nombreEstudiante"
+                        type="text"
+                        placeholder="Ingrese el nombre completo"
+                        required
+                    >
+                    <small class="error-campo" id="error-nombreEstudiante">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+                <div class="campo">
+                    <label for="cedulaEstudiante">
+                        Cédula o identificación
+                        <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="cedulaEstudiante"
+                        name="cedulaEstudiante"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="20"
+                        placeholder="Solo números"
+                        required
+                    >
+                    <small class="error-campo" id="error-cedulaEstudiante">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+                <div class="campo">
+                    <label for="nivel">
+                        Nivel educativo <span class="requerido">*</span>
+                    </label>
+                    <select id="nivel" name="nivel" required>
+                        <option value="">Seleccione el nivel</option>
+                        <option value="Preescolar">Preescolar</option>
+                        <option value="Primaria">Primaria</option>
+                        <option value="Secundaria">Secundaria</option>
+                    </select>
+                    <small class="error-campo" id="error-nivel">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- DATOS DEL ENCARGADO -->
+
+        <section class="tarjeta">
+
+            <div class="titulo-seccion">
+                <div class="numero">02</div>
+                <div>
+                    <h3>Padre, madre o encargado</h3>
+                    <p>Datos de identificación del responsable</p>
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <div class="campo completo">
+                    <label for="nombreEncargado">
+                        Nombre completo
+                        <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="nombreEncargado"
+                        name="nombreEncargado"
+                        type="text"
+                        placeholder="Ingrese el nombre completo"
+                        required
+                    >
+                    <small class="error-campo" id="error-nombreEncargado">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+                <div class="campo completo">
+                    <label for="cedulaEncargado">
+                        Cédula o identificación
+                        <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="cedulaEncargado"
+                        name="cedulaEncargado"
+                        type="text"
+                        inputmode="numeric"
+                        maxlength="20"
+                        placeholder="Solo números"
+                        required
+                    >
+                    <small class="error-campo" id="error-cedulaEncargado">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTACTO -->
+
+        <section class="tarjeta">
+
+            <div class="titulo-seccion">
+                <div class="numero">03</div>
+                <div>
+                    <h3>Información de contacto</h3>
+                    <p>Datos para comunicarse con el encargado</p>
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <div class="campo">
+                    <label for="telefono">
+                        Número de teléfono
+                        <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="telefono"
+                        name="telefono"
+                        type="tel"
+                        inputmode="numeric"
+                        maxlength="15"
+                        placeholder="Ej. 88888888"
+                        required
+                    >
+                    <small class="error-campo" id="error-telefono">
+                        Por favor, completar este espacio.
+                    </small>
+                </div>
+
+                <div class="campo">
+                    <label for="correo">
+                        Correo electrónico
+                        <span class="requerido">*</span>
+                    </label>
+                    <input
+                        id="correo"
+                        name="correo"
+                        type="email"
+                        placeholder="ejemplo@correo.com"
+                        required
+                    >
+                    <small class="error-campo" id="error-correo">
+                        Por favor, ingrese un correo electrónico válido.
+                    </small>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="acciones">
+            <button class="guardar" type="submit">
+                Guardar formulario
+            </button>
+
+            <button class="limpiar" type="reset">
+                Limpiar campos
+            </button>
+        </div>
+
+        <div id="mensaje" role="status" aria-live="polite"></div>
+
+    </form>
+
+</main>
+
+<footer>
+    <strong>CECELO</strong><br>
+    Sistema de matrícula estudiantil
+</footer>
+
+<script>
+const formulario = document.getElementById("formulario");
+const mensaje = document.getElementById("mensaje");
+
+const camposNumericos = [
+    document.getElementById("cedulaEstudiante"),
+    document.getElementById("cedulaEncargado"),
+    document.getElementById("telefono")
+];
+
+// Evita letras y otros caracteres en cédulas y teléfono.
+camposNumericos.forEach(function(campo) {
+
+    campo.addEventListener("keydown", function(event) {
+        // Permite teclas de edición y navegación.
+        const teclasPermitidas = [
+            "Backspace", "Delete", "Tab", "ArrowLeft",
+            "ArrowRight", "Home", "End", "Enter"
+        ];
+
+        if (
+            teclasPermitidas.includes(event.key) ||
+            event.ctrlKey || event.metaKey
+        ) {
+            return;
+        }
+
+        // Solo admite dígitos.
+        if (!/^[0-9]$/.test(event.key)) {
+            event.preventDefault();
+
+            alert(
+                "No se admiten letras ni otros caracteres. " +
+                "Por favor, ingrese solo números."
+            );
+        }
+    });
+
+    // También limpia letras si el contenido se pega.
+    campo.addEventListener("input", function() {
+        const valorAnterior = this.value;
+        this.value = this.value.replace(/[^0-9]/g, "");
+
+        if (this.value !== valorAnterior) {
+            alert(
+                "No se admiten letras ni otros caracteres. " +
+                "Por favor, ingrese solo números."
+            );
+        }
+
+        quitarError(this);
+    });
+});
+
+// Muestra el mensaje debajo del campo correspondiente.
+function mostrarError(campo, texto) {
+    campo.classList.add("invalido");
+
+    const error = document.getElementById("error-" + campo.id);
+
+    if (error) {
+        error.textContent = texto;
+        error.classList.add("visible");
+    }
+}
+
+// Elimina el error al corregir el campo.
+function quitarError(campo) {
+    campo.classList.remove("invalido");
+
+    const error = document.getElementById("error-" + campo.id);
+
+    if (error) {
+        error.classList.remove("visible");
+    }
+}
+
+// Revisa los campos mientras se completan.
+Array.from(formulario.elements).forEach(function(campo) {
+    if (!campo.id || campo.type === "submit" ||
+        campo.type === "reset") {
+        return;
+    }
+
+    campo.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            quitarError(this);
+        }
+
+        mensaje.className = "";
+        mensaje.textContent = "";
+    });
+
+    campo.addEventListener("change", function() {
+        if (this.value.trim() !== "") {
+            quitarError(this);
+        }
+    });
+});
+
+// Validación al intentar guardar.
+formulario.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    mensaje.className = "";
+    mensaje.textContent = "";
+
+    let primerCampoInvalido = null;
+
+    const campos = [
+        document.getElementById("nombreEstudiante"),
+        document.getElementById("cedulaEstudiante"),
+        document.getElementById("nivel"),
+        document.getElementById("nombreEncargado"),
+        document.getElementById("cedulaEncargado"),
+        document.getElementById("telefono"),
+        document.getElementById("correo")
+    ];
+
+    campos.forEach(function(campo) {
+        quitarError(campo);
+
+        if (campo.value.trim() === "") {
+            mostrarError(
+                campo,
+                "Por favor, completar este espacio."
+            );
+
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = campo;
+            }
+
+            return;
+        }
+
+        if (campo.id === "telefono" &&
+            !/^[0-9]{8,15}$/.test(campo.value)) {
+            mostrarError(
+                campo,
+                "Ingrese solo números, entre 8 y 15 dígitos."
+            );
+
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = campo;
+            }
+        }
+
+        if (
+            (campo.id === "cedulaEstudiante" ||
+             campo.id === "cedulaEncargado") &&
+            !/^[0-9]+$/.test(campo.value)
+        ) {
+            mostrarError(
+                campo,
+                "La cédula debe contener únicamente números."
+            );
+
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = campo;
+            }
+        }
+
+        if (campo.type === "email" &&
+            !campo.validity.valid) {
+            mostrarError(
+                campo,
+                "Por favor, ingrese un correo electrónico válido."
+            );
+
+            if (!primerCampoInvalido) {
+                primerCampoInvalido = campo;
+            }
+        }
+    });
+
+    if (primerCampoInvalido) {
+        primerCampoInvalido.focus();
+        primerCampoInvalido.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+        return;
+    }
+
+    mensaje.className = "exito";
+    mensaje.textContent =
+        "¡Formulario completado correctamente!";
+
+    mensaje.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+});
+
+// Limpiar el formulario y sus mensajes.
+formulario.addEventListener("reset", function() {
+    setTimeout(function() {
+        camposNumericos.forEach(quitarError);
+
+        formulario.querySelectorAll(".invalido").forEach(
+            function(campo) {
+                campo.classList.remove("invalido");
+            }
+        );
+
+        formulario.querySelectorAll(".error-campo").forEach(
+            function(error) {
+                error.classList.remove("visible");
+            }
+        );
+
+        mensaje.className = "";
+        mensaje.textContent = "";
+    }, 0);
+});
+</script>
+
+</body>
+</html>
